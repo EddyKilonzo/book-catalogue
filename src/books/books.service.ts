@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException, InternalServerErrorException, ConflictException } from '@nestjs/common';
 import { book } from './interfaces/books.interface';
 import { CreateBookDto } from './Dto/create.book.dto';
 import { UpdateBookDto } from './Dto/update.books.dto';
@@ -8,69 +8,88 @@ import { DatabaseService } from 'src/database/connection.services';
 export class BooksService {
   constructor(private readonly databaseService: DatabaseService) {}
 
-  async create(data: CreateBookDto): Promise<book> {
+  async create(createBookDto: CreateBookDto): Promise<book> {
     try {
-      const result = await this.databaseService.query(
-        `INSERT INTO books(title, author, publication_year, isbn)
-        VALUES ($1, $2, $3, $4)
-        RETURNING *`,
-        [data.title, data.author, data.publication_year, data.isbn],
-      )
-      if(result.rows.length === 0) {
-        throw new Error('Failed to add a book')
-      }
-      return result.rows[0]
+      const query = `SELECT * FROM sp_create_book($1::varchar, $2::varchar, $3::integer, $4::varchar)`;
+      const result = await this.databaseService.query(query, [
+        createBookDto.title,
+        createBookDto.author,
+        createBookDto.publication_year,
+        createBookDto.isbn
+      ]);
+      
+      return result.rows[0];
     } catch (error) {
-      throw new Error ('connection error')
+      if (error.message.includes('already exists')) {
+        throw new ConflictException(`Book with ISBN ${createBookDto.isbn} already exists`);
+      }
+      console.error('Database error:', error);
+      throw new InternalServerErrorException('Failed to create book');
     }
-    
-    
   }
-  async findAllBooks(data: CreateBookDto): Promise<book[]> {
+
+  async findAllBooks(): Promise<book[]> {
     try {
       const result = await this.databaseService.query(
-        `SELECT * FROM books`,
-      )
-      if(result.rows.length === 0) {
-        throw new Error('No books found')
+        `SELECT * FROM sp_get_all_books()`
+      );
+      if (result.rows.length === 0) {
+        throw new NotFoundException('No books found');
       }
-      return result.rows
+      return result.rows;
     } catch (error) {
-      throw new Error ('connection error')
+      if (error instanceof NotFoundException) {
+        throw error;
+      }
+      console.error('Database error:', error);
+      throw new InternalServerErrorException('Failed to retrieve books');
     }
   }
 
   async findOneBook(id: number): Promise<book> {
     try {
       const result = await this.databaseService.query(
-        `SELECT FROM books WHERE id = $1`,
+        `SELECT * FROM sp_get_book($1::integer)`,
         [id]
       );
+      if (result.rows.length === 0) {
+        throw new NotFoundException(`Book with ID ${id} not found`);
+      }
       return result.rows[0];
     } catch (error) {
-      throw new Error('failed to find book');
+      if (error instanceof NotFoundException) {
+        throw error;
+      }
+      console.error('Database error:', error);
+      throw new InternalServerErrorException(`Failed to retrieve book ${id}`);
     }
   }
 
-  async findByauthor(author: string): Promise<book[]> {
+  // ... (apply similar improvements to other methods)
+
+  async updateBook(id: number, data: UpdateBookDto): Promise<book> {
     try {
       const result = await this.databaseService.query(
-        `SELECT FROM books WHERE author = $1`,
-        [author]
+        `SELECT * FROM sp_update_book($1::integer, $2::varchar, $3::varchar, $4::integer, $5::varchar)`,
+        [
+          id,
+          data.title,
+          data.author,
+          data.publication_year,
+          data.isbn
+        ]
       );
-      return result.rows;
+
+      if (result.rows.length === 0) {
+        throw new NotFoundException(`Book with ID ${id} not found`);
+      }
+      return result.rows[0];
     } catch (error) {
-      throw new Error('failed to find books by author');
+      if (error instanceof NotFoundException) {
+        throw error;
+      }
+      console.error('Database error:', error);
+      throw new InternalServerErrorException(`Failed to update book ${id}`);
     }
   }
-
-  async updateBook(id: number, data: UpdateBookDto) Promise<book>{
-    try {
-      const result = await this.databaseService.query(
-        
-      );
-    }
-  }
-    
-  
 }

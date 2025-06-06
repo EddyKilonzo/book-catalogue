@@ -1,0 +1,72 @@
+@baseUrl = http://localhost:3000
+
+### Create a new book
+POST {{baseUrl}}/books
+Content-Type: application/json
+
+{
+  "title": "The Great Gatsby",
+  "author": "F. Scott Fitzgerald",
+  "publication_year": 1925,
+  "isbn": "978-0-7432-7356-5"
+  
+}
+
+### Get all books
+GET {{baseUrl}}/books
+
+### Get book by ID
+GET {{baseUrl}}/books/:id
+
+### Get books by author
+GET {{baseUrl}}/books/author/
+
+### Get books by title
+GET {{baseUrl}}/books/title/
+
+### Get books by ISBN
+GET {{baseUrl}}/books/isbn/
+
+### Update a book
+PATCH {{baseUrl}}/books/
+Content-Type: application/json
+
+{
+  "title": "The Great Gatsby - Updated Edition",
+  "author": "F. Scott Fitzgerald"
+}
+
+### Delete a book
+DELETE {{baseUrl}}/books/:id
+
+###
+### Example requests with real data
+###
+
+### Create another book
+POST {{baseUrl}}/books
+Content-Type: application/json
+
+{
+  "title": "To Kill a Mockingbird",
+  "author": "Harper Lee",
+  "isbn": "978-0-06-112008-4",
+  "published_year": 1960
+}
+
+### Search for books by Harper Lee
+GET {{baseUrl}}/books/author/Harper Lee
+
+### Search for books with title containing "Mockingbird"
+GET {{baseUrl}}/books/title/Mockingbird
+
+### Search by specific ISBN
+GET {{baseUrl}}/books/isbn/978-0-06-112008-4
+
+### Update book with ID 2
+PATCH {{baseUrl}}/books/2
+Content-Type: application/json
+
+{
+  "published_year": 1960
+}
