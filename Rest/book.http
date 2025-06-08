@@ -16,10 +16,10 @@ Content-Type: application/json
 GET {{baseUrl}}/books
 
 ### Get book by ID
-GET {{baseUrl}}/books/:id
+GET {{baseUrl}}/books/1
 
 ### Get books by author
-GET {{baseUrl}}/books/author/
+GET {{baseUrl}}/books/author/F. Scott Fitzgerald
 
 ### Get books by title
 GET {{baseUrl}}/books/title/
@@ -28,7 +28,7 @@ GET {{baseUrl}}/books/title/
 GET {{baseUrl}}/books/isbn/
 
 ### Update a book
-PATCH {{baseUrl}}/books/
+PATCH {{baseUrl}}/books/1
 Content-Type: application/json
 
 {

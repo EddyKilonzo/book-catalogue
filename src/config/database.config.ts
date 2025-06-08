@@ -13,7 +13,7 @@ export const databaseConfig: DatabaseConfig = {
   port: parseInt(process.env.DB_PORT || '5432'),
   username: process.env.DB_USERNAME || 'postgres',
   password: process.env.DB_PASSWORD || 'EB3/56398/21',
-  database: process.env.DB_DATABASE || 'books_catalogue',
+  database: process.env.DB_DATABASE || 'book_catalog',
 };
 
 export const createDatabasePool = (): Pool => {
