@@ -67,8 +67,23 @@ export class BooksService {
   }
 
   async deleteBook(id: number): Promise<book> {
-    const result = await this.databaseService.query('DELETE FROM book WHERE id = $1 RETURNING *', [id]);
-    return result.rows[0];
+    try {
+      const result = await this.databaseService.query(
+        `SELECT * FROM sp_delete_book($1::integer)`,
+        [id]
+      );
+      if (result.rows.length === 0) {
+        throw new NotFoundException(`Book with ID ${id} not found`);
+      }
+      return result.rows[0];
+    }
+    catch (error) {
+      if (error instanceof NotFoundException) {
+        throw error;
+      }
+      console.error('Database error:', error);
+      throw new InternalServerErrorException(`Failed to delete book ${id}`);
+    }
   }
 
   async findOneBook(id: number): Promise<book> {

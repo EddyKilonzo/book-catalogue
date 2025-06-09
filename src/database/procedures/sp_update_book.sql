@@ -18,7 +18,7 @@ RETURNS TABLE(id INTEGER, title VARCHAR(250), author VARCHAR(250), publication_y
             RAISE EXCEPTION 'Book with ID % does not exist', p_id;
         END IF;
 
-        IF p_title IS NOT NULL AND p_isbn != current_isbn THEN
+        IF p_isbn IS NOT NULL AND p_isbn != current_isbn THEN
             IF EXISTS (SELECT 1 FROM books WHERE isbn = p_isbn) THEN
                 RAISE EXCEPTION 'Book with ISBN % already exists', p_isbn;
             END IF;
@@ -26,11 +26,12 @@ RETURNS TABLE(id INTEGER, title VARCHAR(250), author VARCHAR(250), publication_y
 
         RETURN QUERY
         UPDATE books
-        SET books.title = COALESCE(p_title, books.title),
-            books.author = COALESCE(p_author, books.author),
-            books.publication_year = COALESCE(p_publication_year, books.publication_year),
-            books.isbn = COALESCE(p_isbn, books.isbn)
+        SET title = COALESCE(p_title, books.title),
+            author = COALESCE(p_author, books.author),
+            publication_year = COALESCE(p_publication_year, books.publication_year),
+            isbn = COALESCE(p_isbn, books.isbn)
         WHERE books.id = p_id
         RETURNING books.id, books.title, books.author, books.publication_year, books.isbn;
     END;
-    $$ LANGUAGE plpgsql;
+$$ LANGUAGE plpgsql;
+

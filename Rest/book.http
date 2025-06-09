@@ -34,10 +34,13 @@ GET {{baseUrl}}/books/author/Harper Lee
 GET {{baseUrl}}/books/title/To Kill a Mockingbird
 
 
-### Update book with ID 4
-PATCH {{baseUrl}}/books/4
+### Update book with ID 
+PATCH {{baseUrl}}/books/5
 Content-Type: application/json
 
 {
-  "publication_year": 1965
+  "publication_year": 1961
 }
+
+###DELETE book
+DELETE {{baseUrl}}/books/4

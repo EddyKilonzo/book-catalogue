@@ -160,7 +160,6 @@ export class BooksController {
   }
 
   @Delete(':id')
-  @HttpCode(HttpStatus.NO_CONTENT)
   async delete(@Param('id') id: number): Promise<ApiResponse<book>> {
     try {
       const book = await this.booksService.deleteBook(id);
