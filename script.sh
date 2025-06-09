@@ -5,7 +5,7 @@ echo " Setting up Book catalog......"
 # Create database 
 psql -U postgres -h localhost -c "CREATE DATABASE book_catalog;"
 
-# Runmigration
+# Run-migration
 psql -U postgres -h localhost -d book_catalog -f src/database/migrations/001_initial_schema.sql
 
 # Create stored procedures

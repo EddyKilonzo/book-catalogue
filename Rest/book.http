@@ -15,33 +15,6 @@ Content-Type: application/json
 ### Get all books
 GET {{baseUrl}}/books
 
-### Get book by ID
-GET {{baseUrl}}/books/1
-
-### Get books by author
-GET {{baseUrl}}/books/author/F. Scott Fitzgerald
-
-### Get books by title
-GET {{baseUrl}}/books/title/
-
-### Get books by ISBN
-GET {{baseUrl}}/books/isbn/
-
-### Update a book
-PATCH {{baseUrl}}/books/1
-Content-Type: application/json
-
-{
-  "title": "The Great Gatsby - Updated Edition",
-  "author": "F. Scott Fitzgerald"
-}
-
-### Delete a book
-DELETE {{baseUrl}}/books/:id
-
-###
-### Example requests with real data
-###
 
 ### Create another book
 POST {{baseUrl}}/books
@@ -51,22 +24,20 @@ Content-Type: application/json
   "title": "To Kill a Mockingbird",
   "author": "Harper Lee",
   "isbn": "978-0-06-112008-4",
-  "published_year": 1960
+  "publication_year": 1960
 }
 
 ### Search for books by Harper Lee
 GET {{baseUrl}}/books/author/Harper Lee
 
 ### Search for books with title containing "Mockingbird"
-GET {{baseUrl}}/books/title/Mockingbird
+GET {{baseUrl}}/books/title/To Kill a Mockingbird
 
-### Search by specific ISBN
-GET {{baseUrl}}/books/isbn/978-0-06-112008-4
 
-### Update book with ID 2
-PATCH {{baseUrl}}/books/2
+### Update book with ID 4
+PATCH {{baseUrl}}/books/4
 Content-Type: application/json
 
 {
-  "published_year": 1960
+  "publication_year": 1965
 }

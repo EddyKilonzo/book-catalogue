@@ -49,17 +49,20 @@ export class BooksService {
     }
   }
   async findByauthor(author: string): Promise<book[]> {
-    const result = await this.databaseService.query('SELECT * FROM book WHERE author = $1', [author]);
+    const query = `SELECT * FROM sp_get_books_by_author($1)`;
+    const result = await this.databaseService.query(query, [author]);
     return result.rows;
   }
 
   async findBytitle(title: string): Promise<book[]> {
-    const result = await this.databaseService.query('SELECT * FROM book WHERE title = $1', [title]);
+    const query = `SELECT * FROM sp_get_books_by_title($1)`;
+    const result = await this.databaseService.query(query, [title]);
     return result.rows;
   }
 
   async findByisbn(isbn: string): Promise<book[]> {
-    const result = await this.databaseService.query('SELECT * FROM book WHERE isbn = $1', [isbn]);
+    const query = `SELECT * FROM sp_get_books_by_isbn($1)`;
+    const result = await this.databaseService.query(query, [isbn]);
     return result.rows;
   }
 
@@ -87,7 +90,7 @@ export class BooksService {
     }
   }
 
-  // ... (apply similar improvements to other methods)
+  // ...
 
   async updateBook(id: number, data: UpdateBookDto): Promise<book> {
     try {
